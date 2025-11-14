@@ -1,1 +1,4 @@
 /quartus/
+/software/
+*.hex
+*.bak
