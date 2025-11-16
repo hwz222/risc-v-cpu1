@@ -1,1 +1,4 @@
 A single cycle risc-v cpu. rv32i
+
+TODO:
+1. connect cpu to memory 
