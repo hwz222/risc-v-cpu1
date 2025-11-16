@@ -1,3 +1,5 @@
+/* This file define the command OPCODE*/
+
 // Opcodes
 localparam OPC_RTYPE  = 7'b0110011;
 localparam OPC_ITYPE  = 7'b0010011;

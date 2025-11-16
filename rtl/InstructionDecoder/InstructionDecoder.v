@@ -46,12 +46,12 @@ module InstructionDecoder (
     // 預設值（避免 latch）
     // ---------------------
     always @* begin
-        RegWE       = 0;
-        MemoryRE    = 0;
-        MemoryWE    = 0;
-        ALUOp1Src   = 0;
-        ALUOp2Src   = 0;
-        RegWriteSrc = 2'b00;
+        RegWE       = 0;          // write not enable
+        MemoryRE    = 0;          // memory cant read
+        MemoryWE    = 0;          // memory cant write
+        ALUOp1Src   = 0;          //  src1 = rs1
+        ALUOp2Src   = 0;          //  src2 = rs2
+        RegWriteSrc = 2'b00;      // wirte alu result
         ALUOp       = ALUOP_ADD;  // 預設 ALU ADD
     end
 

@@ -1,3 +1,5 @@
+`include "rv32i_defs.vh"
+
 module ImmGen(
     input  wire [31:0] instr,
     output reg  [31:0] imm
@@ -5,6 +7,7 @@ module ImmGen(
 
     wire [6:0] opcode = instr[6:0];
 
+    // 各種格式的立即數拆解
     wire [31:0] imm_i = {{20{instr[31]}}, instr[31:20]};
     wire [31:0] imm_s = {{20{instr[31]}}, instr[31:25], instr[11:7]};
     wire [31:0] imm_b = {{19{instr[31]}}, instr[31], instr[7],
@@ -16,16 +19,25 @@ module ImmGen(
 
     always @* begin
         case (opcode)
-            7'b0000011,  // LOAD (I)
-            7'b0010011,  // I-type ALU
-            7'b1100111: imm = imm_i;  // JALR
+            // I-type 立即數：LOAD / I-type ALU / JALR
+            OPC_LOAD,
+            OPC_ITYPE,
+            OPC_JALR:  imm = imm_i;
 
-            7'b0100011: imm = imm_s;  // STORE (S)
-            7'b1100011: imm = imm_b;  // BRANCH (B)
-            7'b0110111,
-            7'b0010111: imm = imm_u;  // LUI / AUIPC (U)
-            7'b1101111: imm = imm_j;  // JAL (J)
-            default:    imm = 32'b0;
+            // S-type：STORE
+            OPC_STORE: imm = imm_s;
+
+            // B-type：BRANCH
+            OPC_BRANCH: imm = imm_b;
+
+            // U-type：LUI / AUIPC
+            OPC_LUI,
+            OPC_AUIPC: imm = imm_u;
+
+            // J-type：JAL
+            OPC_JAL:   imm = imm_j;
+
+            default:   imm = 32'b0;
         endcase
     end
 
