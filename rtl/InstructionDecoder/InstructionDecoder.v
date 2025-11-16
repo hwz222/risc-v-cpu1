@@ -13,7 +13,6 @@ module InstructionDecoder (
     output reg        ALUOp1Src,      // 0 = rs1, 1 = PC
     output reg        ALUOp2Src,      // 0 = rs2, 1 = Imm
     output wire [31:0] Imm,
-    output reg  [2:0]  ALUOp,         // 交給 ALU decoder
 
     // WriteBack
     output reg [1:0] RegWriteSrc,     // 0=ALU, 1=MEM, 2=PC+4
@@ -52,7 +51,6 @@ module InstructionDecoder (
         ALUOp1Src   = 0;          //  src1 = rs1
         ALUOp2Src   = 0;          //  src2 = rs2
         RegWriteSrc = 2'b00;      // wirte alu result
-        ALUOp       = ALUOP_ADD;  // 預設 ALU ADD
     end
 
     // ---------------------
@@ -69,7 +67,6 @@ module InstructionDecoder (
                 ALUOp1Src   = 0;
                 ALUOp2Src   = 0;
                 RegWriteSrc = 2'b00;    // ALU
-                ALUOp       = ALUOP_RTYPE;
             end
 
             // ===========================================
@@ -80,7 +77,6 @@ module InstructionDecoder (
                 ALUOp1Src   = 0;
                 ALUOp2Src   = 1;
                 RegWriteSrc = 2'b00;   // ALU
-                ALUOp       = ALUOP_ITYPE;
             end
 
             // ===========================================
@@ -91,7 +87,6 @@ module InstructionDecoder (
                 MemoryRE    = 1;
                 ALUOp2Src   = 1;       // rs1 + imm
                 RegWriteSrc = 2'b01;   // Memory
-                ALUOp       = ALUOP_ADD;
             end
 
             // ===========================================
@@ -100,7 +95,6 @@ module InstructionDecoder (
             OPC_STORE: begin
                 MemoryWE    = 1;
                 ALUOp2Src   = 1;       // rs1 + imm
-                ALUOp       = ALUOP_ADD;
             end
 
             // ===========================================
@@ -112,7 +106,6 @@ module InstructionDecoder (
                 MemoryRE    = 0;
                 MemoryWE    = 0;
                 RegWE       = 0;
-                ALUOp       = ALUOP_BRANCH;
             end
 
             // ===========================================
@@ -123,7 +116,6 @@ module InstructionDecoder (
                 ALUOp1Src   = 0;
                 ALUOp2Src   = 1;
                 RegWriteSrc = 2'b00;   // ALU gets U-type number
-                ALUOp       = ALUOP_LUI;
             end
 
             // ===========================================
@@ -134,7 +126,6 @@ module InstructionDecoder (
                 ALUOp1Src   = 1;       // PC
                 ALUOp2Src   = 1;       // imm
                 RegWriteSrc = 2'b00;   // ALU
-                ALUOp       = ALUOP_ADD;
             end
 
             // ===========================================
@@ -145,7 +136,6 @@ module InstructionDecoder (
                 ALUOp1Src   = 1;
                 ALUOp2Src   = 1;
                 RegWriteSrc = 2'b10;   // PC + 4
-                ALUOp       = ALUOP_JUMP;
             end
 
             // ===========================================
@@ -156,7 +146,6 @@ module InstructionDecoder (
                 ALUOp1Src   = 0;
                 ALUOp2Src   = 1;
                 RegWriteSrc = 2'b10;   // PC + 4
-                ALUOp       = ALUOP_JUMP;
             end
 
             // ===========================================
