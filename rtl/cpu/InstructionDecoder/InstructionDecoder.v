@@ -1,5 +1,6 @@
 `include "rv32i_defs.vh"
 
+
 module InstructionDecoder (
     input  wire [31:0] instruction,
 
@@ -40,9 +41,9 @@ module InstructionDecoder (
         .instr(instruction),
         .imm(Imm)
     );
-
+    
     // ---------------------
-    // 預設值（避免 latch）
+    // 主解碼邏輯
     // ---------------------
     always @* begin
         RegWE       = 0;          // write not enable
@@ -51,18 +52,13 @@ module InstructionDecoder (
         ALUOp1Src   = 0;          //  src1 = rs1
         ALUOp2Src   = 0;          //  src2 = rs2
         RegWriteSrc = 2'b00;      // wirte alu result
-    end
 
-    // ---------------------
-    // 主解碼邏輯
-    // ---------------------
-    always @* begin
         case (opcode)
 
             // ===========================================
             // R-type
             // ===========================================
-            OPC_RTYPE: begin
+            `OPC_RTYPE: begin
                 RegWE       = 1;
                 ALUOp1Src   = 0;
                 ALUOp2Src   = 0;
@@ -72,7 +68,7 @@ module InstructionDecoder (
             // ===========================================
             // I-type arithmetic (addi/andi/ori/..)
             // ===========================================
-            OPC_ITYPE: begin
+            `OPC_ITYPE: begin
                 RegWE       = 1;
                 ALUOp1Src   = 0;
                 ALUOp2Src   = 1;
@@ -82,7 +78,7 @@ module InstructionDecoder (
             // ===========================================
             // Load
             // ===========================================
-            OPC_LOAD: begin
+            `OPC_LOAD: begin
                 RegWE       = 1;
                 MemoryRE    = 1;
                 ALUOp2Src   = 1;       // rs1 + imm
@@ -92,7 +88,7 @@ module InstructionDecoder (
             // ===========================================
             // Store
             // ===========================================
-            OPC_STORE: begin
+            `OPC_STORE: begin
                 MemoryWE    = 1;
                 ALUOp2Src   = 1;       // rs1 + imm
             end
@@ -100,7 +96,7 @@ module InstructionDecoder (
             // ===========================================
             // Branch
             // ===========================================
-            OPC_BRANCH: begin
+            `OPC_BRANCH: begin
                 ALUOp1Src   = 0;
                 ALUOp2Src   = 0;
                 MemoryRE    = 0;
@@ -111,7 +107,7 @@ module InstructionDecoder (
             // ===========================================
             // LUI
             // ===========================================
-            OPC_LUI: begin
+            `OPC_LUI: begin
                 RegWE       = 1;
                 ALUOp1Src   = 0;
                 ALUOp2Src   = 1;
@@ -121,7 +117,7 @@ module InstructionDecoder (
             // ===========================================
             // AUIPC
             // ===========================================
-            OPC_AUIPC: begin
+            `OPC_AUIPC: begin
                 RegWE       = 1;
                 ALUOp1Src   = 1;       // PC
                 ALUOp2Src   = 1;       // imm
@@ -131,7 +127,7 @@ module InstructionDecoder (
             // ===========================================
             // JAL
             // ===========================================
-            OPC_JAL: begin
+            `OPC_JAL: begin
                 RegWE       = 1;
                 ALUOp1Src   = 1;
                 ALUOp2Src   = 1;
@@ -141,7 +137,7 @@ module InstructionDecoder (
             // ===========================================
             // JALR
             // ===========================================
-            OPC_JALR: begin
+            `OPC_JALR: begin
                 RegWE       = 1;
                 ALUOp1Src   = 0;
                 ALUOp2Src   = 1;

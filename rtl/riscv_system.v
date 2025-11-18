@@ -4,7 +4,6 @@ module riscv_system(
 );
 
 /*=========== 功能模組間的連線 ==============*/
-
 // Data Memory Wires
 wire [31:0] DataAddr;
 wire [31:0] WD;
@@ -17,7 +16,7 @@ wire [31:0] InstrAddr;
 wire [31:0] Instruction;
 
 
-riscv_v_top cpu(
+risc_v_top cpu(
     .clk(clk),
     .rst_n(rst_n),
 

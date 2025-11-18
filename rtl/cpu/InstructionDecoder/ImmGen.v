@@ -20,22 +20,22 @@ module ImmGen(
     always @* begin
         case (opcode)
             // I-type 立即數：LOAD / I-type ALU / JALR
-            OPC_LOAD,
-            OPC_ITYPE,
-            OPC_JALR:  imm = imm_i;
+            `OPC_LOAD,
+            `OPC_ITYPE,
+            `OPC_JALR:  imm = imm_i;
 
             // S-type：STORE
-            OPC_STORE: imm = imm_s;
+            `OPC_STORE: imm = imm_s;
 
             // B-type：BRANCH
-            OPC_BRANCH: imm = imm_b;
+            `OPC_BRANCH: imm = imm_b;
 
             // U-type：LUI / AUIPC
-            OPC_LUI,
-            OPC_AUIPC: imm = imm_u;
+            `OPC_LUI,
+            `OPC_AUIPC: imm = imm_u;
 
             // J-type：JAL
-            OPC_JAL:   imm = imm_j;
+            `OPC_JAL:   imm = imm_j;
 
             default:   imm = 32'b0;
         endcase

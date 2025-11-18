@@ -1,4 +1,4 @@
-module riscv_v_top (
+module risc_v_top (
     input wire clk,
     input wire rst_n,
 

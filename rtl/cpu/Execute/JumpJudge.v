@@ -10,9 +10,9 @@ module JumpJudge(
 );
 
     // -------- 基本類型判斷 --------
-    wire is_jal    = (Opcode == OPC_JAL);
-    wire is_jalr   = (Opcode == OPC_JALR);
-    wire is_branch = (Opcode == OPC_BRANCH);
+    wire is_jal    = (Opcode == `OPC_JAL);
+    wire is_jalr   = (Opcode == `OPC_JALR);
+    wire is_branch = (Opcode == `OPC_BRANCH);
 
     // -------- branch 條件判斷 --------
     reg branch_taken;
