@@ -1,6 +1,7 @@
 module riscv_system(
     input wire clk,
-    input wire rst_n
+    input wire rst_n,
+    output wire [31:0] debug_pc
 );
 
 /*=========== 功能模組間的連線 ==============*/
@@ -27,7 +28,9 @@ risc_v_top cpu(
     .Strobe(Strobe),
 
     .Instruction(Instruction),
-    .InstrAddr(InstrAddr)
+    .InstrAddr(InstrAddr),
+
+    .debug_pc(debug_pc)
 );
 
 data_mem DM(
