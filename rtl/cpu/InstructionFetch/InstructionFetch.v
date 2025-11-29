@@ -9,8 +9,7 @@ module InstructionFetch #(
     input wire JumpFlag,
     input wire [31:0] JumpAddr,
     
-    output reg [31:0] pc,
-    output wire [31:0] instruction
+    output reg [31:0] pc
 );
 
 
@@ -24,11 +23,5 @@ module InstructionFetch #(
             pc <= pc_next;
         end
     end
-
-    /* Get instruction from instruction memory */
-    instr_mem instr_mem_inst(
-        .addr  (pc),
-        .instr (instruction)
-    );
 
 endmodule

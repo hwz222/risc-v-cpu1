@@ -1,7 +1,7 @@
 module riscv_system(
-    input wire clk,
-    input wire rst_n,
-    output wire [31:0] debug_pc
+    input wire clock,
+    input wire rst_n, 
+    output reg [7:0] led
 );
 
 /*=========== 功能模組間的連線 ==============*/
@@ -16,9 +16,22 @@ wire [3:0] Strobe;
 wire [31:0] InstrAddr;
 wire [31:0] Instruction;
 
+// memory-map
+localparam LED_ADDR = 32'hFFFF_0000;
+
+always @(posedge clock or negedge rst_n) begin
+    if (!rst_n) begin
+        led <= 8'd0;
+    end else begin
+        // 只要 CPU 做 store 且對到 0xFFFF0000 這個 word，就更新 LED
+        if (WE && (DataAddr[31:2] == LED_ADDR[31:2])) begin
+            led <= WD[7:0];    // 低 8 bits 控制 8 顆 LED
+        end
+    end
+end
 
 risc_v_top cpu(
-    .clk(clk),
+    .clk(clock),
     .rst_n(rst_n),
 
     .RD(RD),
@@ -28,13 +41,13 @@ risc_v_top cpu(
     .Strobe(Strobe),
 
     .Instruction(Instruction),
-    .InstrAddr(InstrAddr),
-
-    .debug_pc(debug_pc)
+    .InstrAddr(InstrAddr)
 );
 
+
+
 data_mem DM(
-    .clk(clk),
+    .clk(clock),
     .we(WE),
     .strobe(Strobe),
     .addr(DataAddr),

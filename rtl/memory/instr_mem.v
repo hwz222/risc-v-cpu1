@@ -9,10 +9,8 @@ module instr_mem #(
 
     // async read：addr 一變，instr 會經過 LUT delay 後跟著變
     assign instr = mem[addr[31:2]];  // word address = addr[31:2]
-
-    // 模擬／綁定程式用
-//    initial begin
-//        $readmemh("prog.hex", mem);
-//    end
+    initial begin
+        $readmemh("instr_mem.hex", mem); 
+    end
 
 endmodule

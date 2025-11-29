@@ -11,13 +11,9 @@ module risc_v_top (
 
     // Instruction memory port
     input wire [31:0] Instruction,
-    output wire [31:0] InstrAddr,
+    output wire [31:0] InstrAddr
 
-    // debug
-    output wire [31:0] debug_pc
 );
-    // debug_pc
-    assign debug_pc = pc;
 
     /*=========== 功能模組間的連線 ==============*/
     // register file

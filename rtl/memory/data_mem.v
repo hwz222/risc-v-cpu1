@@ -9,6 +9,9 @@ module data_mem #(
     output wire [31:0] rdata
 );
     reg [31:0] mem [0:DEPTH-1];
+    initial begin
+        $readmemh("data_mem.hex", mem); 
+    end
 
     wire [31:0] word_addr = addr[31:2];
 
@@ -25,4 +28,5 @@ module data_mem #(
     // async read
     assign rdata = mem[word_addr];
 
+    
 endmodule
