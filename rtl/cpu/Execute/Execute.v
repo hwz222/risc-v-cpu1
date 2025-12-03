@@ -27,7 +27,7 @@ module Execute(
         .Opcode(Opcode),
         .Funct3(Funct3),
         .Funct7(Funct7),
-        .ALUFunct(ALU_Funct)
+        .ALUFunct(ALUFunct)
     );
 
     assign data1 = ALUOp1Src ? pc : Reg1RD;

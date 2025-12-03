@@ -2,93 +2,74 @@
 
 module tb_InstructionFetch;
 
-    // DUT I/O
+    // === 測試用訊號 ===
     reg         clk;
     reg         rst_n;
     reg         JumpFlag;
     reg  [31:0] JumpAddr;
-
     wire [31:0] pc;
-    wire [31:0] instruction;
 
-    // DUT
+    // === DUT: 例化你的 InstructionFetch ===
     InstructionFetch #(
         .PC_RESET_ADDR(32'h0000_0000),
-        .IMEM_DEPTH   (256)
+        .IMEM_DEPTH(256)
     ) dut (
-        .clk        (clk),
-        .rst_n      (rst_n),
-        .JumpFlag   (JumpFlag),
-        .JumpAddr   (JumpAddr),
-        .pc         (pc),
-        .instruction(instruction)
+        .clk(clk),
+        .rst_n(rst_n),
+        .JumpFlag(JumpFlag),
+        .JumpAddr(JumpAddr),
+        .pc(pc)
     );
 
-    // 產生 clock：10ns 週期
+    // === 產生 clock: 20ns 週期 (50 MHz) ===
     initial begin
-        clk = 1'b0;
-        forever #5 clk = ~clk;
+        clk = 0;
+        forever #10 clk = ~clk;  // 每 10ns 反相一次 → 20ns 一個週期
     end
 
-    // 主測試流程
+    // === 測試流程 ===
     initial begin
-        // 初始狀態
-        rst_n    = 1'b0;        // 一開始先 reset
-        JumpFlag = 1'b0;
+        // 波形輸出 (使用 Icarus/GTKWave 可看)
+        // $dumpfile("InstructionFetch_tb.vcd");
+        // $dumpvars(0, InstructionFetch_tb);
+
+        // 初始值
+        rst_n    = 0;
+        JumpFlag = 0;
         JumpAddr = 32'h0000_0000;
 
-        // === 一開始的 reset（同步 reset 要吃到 clock）===
-        @(posedge clk);         // 第一次 posedge，rst_n=0 → pc 被設成 PC_RESET_ADDR
-        @(posedge clk);         // 第二次 posedge 前我們再把 reset 放開
-        rst_n = 1'b1;
-        $display("=== Release reset at T=%0t ===", $time);
+        // 先觀察幾個 clock 在 reset 期間
+        $display("=== 上電 reset 階段 ===");
+        repeat (3) @(posedge clk);  // 等 3 個正緣
 
-        // === 讓 pc 正常跑幾個 cycle ===
-        repeat (3) begin
-            @(posedge clk);
-            #1; // 等組合邏輯穩定
-            $display("[Normal] T=%0t pc=%08h instr=%08h", $time, pc, instruction);
-        end
+        // 解除 reset
+        $display("=== 解除 reset ===");
+        rst_n = 1;
 
-        // 此時理論上 pc = 0x00000008（0,4,8 這樣跑）
+        // 觀察 PC 自動 +4 的情況
+        $display("=== PC 自然遞增階段 ===");
+        repeat (20) @(posedge clk);
 
-        // === 中間拉 reset（mid reset）===
-        $display("=== Assert mid-reset at T=%0t ===", $time);
-        rst_n = 1'b0;           // 在下一個 posedge 之前先拉低
+        // 做一次 Jump 測試
+        $display("=== Jump 測試：Jump 到 0x40 ===");
+        JumpAddr = 32'h0000_0040;
+        JumpFlag = 1;
+        @(posedge clk);  // 下一個 clock，pc 應該會變成 0x40
 
-        @(posedge clk);         // 這個 posedge，因為 rst_n=0 → pc 被清回 PC_RESET_ADDR
-        #1;
-        $display("[During reset] T=%0t pc=%08h instr=%08h (expect pc=00000000, instr=第一條)",
-                 $time, pc, instruction);
+        // 取消 JumpFlag，之後應該又是 +4
+        JumpFlag = 0;
+        $display("=== Jump 後繼續遞增 ===");
+        repeat (20) @(posedge clk);
 
-        // 放開 reset
-        rst_n = 1'b1;
-        $display("=== Release mid-reset at T=%0t ===", $time);
-
-        // === reset 之後再觀察 pc 是否重新從 0,4,8... 開始 ===
-        @(posedge clk);
-        #1;
-        $display("[After mid-reset] T=%0t pc=%08h instr=%08h (expect pc=00000000)",
-                 $time, pc, instruction);
-
-        @(posedge clk);
-        #1;
-        $display("[After mid-reset] T=%0t pc=%08h instr=%08h (expect pc=00000004)",
-                 $time, pc, instruction);
-
-        @(posedge clk);
-        #1;
-        $display("[After mid-reset] T=%0t pc=%08h instr=%08h (expect pc=00000008)",
-                 $time, pc, instruction);
-
-        #20;
+        $display("=== 測試結束 ===");
         $finish;
     end
 
-    // 若你用 iverilog/GTKWave，可以打 VCD 看波形
+    // === 方便觀察的 monitor ===
     initial begin
-        $dumpfile("InstructionFetch.vcd");
-        $dumpvars(0, tb_InstructionFetch);
+        $display("time    rst_n  JumpFlag  JumpAddr      pc");
+        $monitor("%4t    %b      %b      %h   %h",
+                 $time, rst_n, JumpFlag, JumpAddr, pc);
     end
 
 endmodule

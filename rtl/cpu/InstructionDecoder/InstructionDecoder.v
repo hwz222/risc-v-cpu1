@@ -97,8 +97,8 @@ module InstructionDecoder (
             // Branch
             // ===========================================
             `OPC_BRANCH: begin
-                ALUOp1Src   = 0;
-                ALUOp2Src   = 0;
+                ALUOp1Src   = 1;
+                ALUOp2Src   = 1;
                 MemoryRE    = 0;
                 MemoryWE    = 0;
                 RegWE       = 0;

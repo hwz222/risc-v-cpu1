@@ -16,7 +16,7 @@ module InstructionFetch #(
     /* Update pc */
     wire [31:0] pc_next = JumpFlag ? JumpAddr : pc + 32'd4; 
 
-    always @(posedge clk) begin
+    always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             pc <= PC_RESET_ADDR;
         end else begin

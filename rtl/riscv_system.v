@@ -1,8 +1,17 @@
 module riscv_system(
-    input wire clock,
+    input wire clk_50Mhz,
     input wire rst_n, 
     output reg [7:0] led
 );
+
+
+
+/* PLL IP */
+wire clock;
+pll	pll_inst (
+	.inclk0 ( clk_50Mhz ),
+	.c0 ( clock )
+	);
 
 /*=========== 功能模組間的連線 ==============*/
 // Data Memory Wires
@@ -59,7 +68,6 @@ instr_mem IM(
     .addr(InstrAddr),
     .instr(Instruction)
 );
-
 
 
 endmodule

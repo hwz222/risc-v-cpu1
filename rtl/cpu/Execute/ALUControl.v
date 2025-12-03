@@ -67,15 +67,7 @@ module ALUControl(
             // Branch (BEQ/BNE/BLT/BGE/BLTU/BGEU)
             // ===============================
             `OPC_BRANCH: begin
-                case (Funct3)
-                    3'b000,
-                    3'b001: ALUFunct = `ALU_SUB;   // BEQ/BNE 用 SUB
-                    3'b100,
-                    3'b101: ALUFunct = `ALU_SLT;   // BLT/BGE 用 signed SLT
-                    3'b110,
-                    3'b111: ALUFunct = `ALU_SLTU;  // BLTU/BGEU 用 unsigned SLTU
-                    default: ALUFunct = `ALU_SUB;
-                endcase
+                ALUFunct = `ALU_ADD;
             end
 
             // ===============================
